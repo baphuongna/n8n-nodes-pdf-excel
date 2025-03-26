@@ -46,3 +46,4 @@ jest.setup.js
 # Logs
 logs/
 *.log
+memory-bank
