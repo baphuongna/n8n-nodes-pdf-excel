@@ -1,20 +1,25 @@
 # n8n-nodes-pdf-excel
 
-N8N node for processing PDF and Excel files with advanced features.
+N8N node for processing PDF and Excel files with advanced features including OCR and form handling.
 
 ## Features
 
 ### PDF Processing
 
-- **Extract Text**: Extract all text content from PDF files (basic implementation)
-- **Get Metadata**: Retrieve metadata information from PDF files
-- **File Path Support**: Process PDF from file path or binary data
-- **Error Handling**: Basic error handling for invalid files
+- **Basic Features**:
+  - Extract text from PDF files
+  - Get metadata information
+  - Process files from path or binary data
+- **Advanced Features** (new):
+  - OCR text extraction using Tesseract.js
+  - PDF form field processing
+  - Support for multiple languages (English, Vietnamese)
+  - Memory efficient processing
 
 ### Excel Processing
 
-- **Read Worksheet**: Read data from specific worksheet in Excel files
-- **Get Worksheets**: List all worksheets in Excel file  
+- **Read Worksheet**: Read data from specific worksheet
+- **Get Worksheets**: List all worksheets in file
 - **Multiple Formats**: Support for .xls and .xlsx formats
 - **Data Validation**: Basic data validation for cell values
 
@@ -23,6 +28,11 @@ N8N node for processing PDF and Excel files with advanced features.
 - Node.js v18+
 - n8n v1.0+
 - TypeScript v5.0+
+
+New dependencies:
+
+- Tesseract.js for OCR
+- pdf-lib for form processing
 
 ## Installation
 
@@ -36,34 +46,45 @@ N8N node for processing PDF and Excel files with advanced features.
 ### Manual Installation
 
 ```bash
-npm install n8n-nodes-pdf-excel
-# or
+# Install with dependencies
+npm install n8n-nodes-pdf-excel tesseract.js pdf-lib
+
+# Or link for development
 npm link n8n-nodes-pdf-excel
 ```
 
 ## Usage
 
-### PDF Processing Example
+### Basic PDF Processing
 
 1. Add "PDF & Excel Processor" node
-2. Select "PDF" as file type  
+2. Select "PDF" as file type
 3. Choose operation:
    - Extract Text
    - Get Metadata
 4. Provide file path or binary data
 5. Execute node
 
-### Excel Processing Example
+### Advanced PDF Features (New)
+
+1. Add "PDF & Excel Processor" node
+2. Select "PDF Advanced" as file type
+3. Choose operation:
+   - Extract Text with OCR
+   - Process Form Fields
+4. Optional: Configure OCR settings
+5. Execute node
+
+### Excel Processing
 
 1. Add "PDF & Excel Processor" node
 2. Select "Excel" as file type
 3. Choose operation:
    - Read Worksheet
-   - Get Worksheets  
+   - Get Worksheets
 4. For worksheet reading:
    - Specify sheet name (optional)
-5. Provide file path or binary data
-6. Execute node
+5. Execute node
 
 ## Development
 
@@ -89,7 +110,7 @@ npm test
 
 ### Lint
 
-```bash  
+```bash
 npm run lint
 ```
 
@@ -97,10 +118,14 @@ npm run lint
 
 - [x] Basic PDF text extraction
 - [x] Basic Excel data reading
-- [ ] Advanced PDF features (OCR, forms)
+- [x] Advanced PDF features (OCR, forms)
 - [ ] Advanced Excel features (formulas, styling)
-- [ ] Performance optimizations
+- [x] Performance optimizations
 
 ## License
 
-MIT License
+MIT
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines for details.

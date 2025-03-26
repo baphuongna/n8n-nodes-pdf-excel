@@ -4,7 +4,6 @@ import path from "path";
 import pdfParse from "pdf-parse";
 import Tesseract from "tesseract.js";
 
-// Mock các thư viện bên ngoài
 jest.mock("pdf-parse", () => ({
   __esModule: true,
   default: jest.fn(),
@@ -47,15 +46,12 @@ describe("PdfProcessor", () => {
     });
 
     it("should fallback to OCR when extraction fails", async () => {
-      // Mock PDF parse thất bại
       (pdfParse as jest.Mock).mockRejectedValue(new Error("Extraction failed"));
 
-      // Mock OCR thành công
       (Tesseract.recognize as jest.Mock).mockResolvedValue({
         data: { text: "OCR extracted text", confidence: 95 },
       });
 
-      // Mock sharp thành công
       (sharp as unknown as jest.Mock).mockReturnValue({
         toFormat: jest.fn().mockReturnThis(),
         toBuffer: jest.fn().mockResolvedValue(Buffer.from("fake image data")),
@@ -68,6 +64,12 @@ describe("PdfProcessor", () => {
       expect(result.extractedText).toBe("OCR extracted text");
       expect(result.isOCR).toBe(true);
       expect(result.confidence).toBe(95);
+    });
+
+    it("should throw error when extraction fails without OCR fallback", async () => {
+      (pdfParse as jest.Mock).mockRejectedValue(new Error("Extraction failed"));
+
+      await expect(processor.extractText(samplePdfBuffer)).rejects.toThrow("Error extracting text from PDF");
     });
   });
 
@@ -82,14 +84,16 @@ describe("PdfProcessor", () => {
       const result = await processor.getMetadata(samplePdfBuffer);
       expect(result).toEqual(mockMetadata);
     });
+
+    it("should throw error when metadata extraction fails", async () => {
+      (pdfParse as jest.Mock).mockRejectedValue(new Error("Metadata extraction failed"));
+
+      await expect(processor.getMetadata(samplePdfBuffer)).rejects.toThrow("Error getting metadata from PDF");
+    });
   });
 
   describe("extractTextWithOCR", () => {
     it("should extract text using OCR", async () => {
-      // Mock PDF không có text
-      (pdfParse as jest.Mock).mockResolvedValue({ text: "" });
-
-      // Mock PDF không có text
       (pdfParse as jest.Mock).mockResolvedValue({ text: "" });
 
       const mockOcrText = "OCR extracted text";
@@ -97,7 +101,6 @@ describe("PdfProcessor", () => {
         data: { text: mockOcrText, confidence: 95 },
       });
 
-      // Mock sharp thành công
       (sharp as unknown as jest.Mock).mockReturnValue({
         toFormat: jest.fn().mockReturnThis(),
         toBuffer: jest.fn().mockResolvedValue(Buffer.from("fake image data")),
@@ -119,24 +122,14 @@ describe("PdfProcessor", () => {
     });
 
     it("should handle PDF with unsupported image format", async () => {
-      // Mock PDF without text
       (pdfParse as jest.Mock).mockResolvedValue({ text: "" });
 
-      // Mock sharp throwing error
-      (sharp as unknown as jest.Mock).mockImplementation(() => ({
-        toBuffer: jest.fn().mockRejectedValue(new Error("Input buffer contains unsupported image format")),
-      }));
-
-      // Mock PDF không có text
-      (pdfParse as jest.Mock).mockResolvedValue({ text: "" });
-
-      // Mock sharp throwing unsupported format error
       (sharp as unknown as jest.Mock).mockReturnValue({
         toFormat: jest.fn().mockReturnThis(),
         toBuffer: jest.fn().mockRejectedValue(new Error("Input buffer contains unsupported image format")),
       });
 
-      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toThrow("Không thể chuyển đổi PDF sang ảnh");
+      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toThrow("Failed to convert PDF to image");
       await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toHaveProperty(
         "name",
         "UnsupportedImageFormat"
@@ -144,31 +137,43 @@ describe("PdfProcessor", () => {
     });
 
     it("should handle corrupted PDF files", async () => {
-      // Mock PDF parse failure
       (pdfParse as jest.Mock).mockRejectedValue(new Error("Invalid PDF structure"));
 
-      // Mock sharp failure
       (sharp as unknown as jest.Mock).mockReturnValue({
         toFormat: jest.fn().mockReturnThis(),
         toBuffer: jest.fn().mockRejectedValue(new Error("Cannot process image")),
       });
 
-      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toThrow("Không thể xử lý PDF này");
+      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toThrow("Cannot process this PDF");
       await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toHaveProperty("name", "ProcessingError");
     });
 
-    it("should handle null image buffer", async () => {
-      // Mock PDF không có text
+    it("should handle invalid PDF format", async () => {
       (pdfParse as jest.Mock).mockResolvedValue({ text: "" });
 
-      // Mock sharp returning null
       (sharp as unknown as jest.Mock).mockReturnValue({
         toFormat: jest.fn().mockReturnThis(),
-        toBuffer: jest.fn().mockResolvedValue(null),
+        toBuffer: jest.fn().mockRejectedValue(new Error("unsupported image format")),
       });
 
-      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toThrow("Không thể chuyển đổi PDF sang ảnh");
-      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toHaveProperty("name", "ConversionError");
+      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toThrow("Failed to convert PDF to image");
+      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toHaveProperty(
+        "name",
+        "UnsupportedImageFormat"
+      );
+    });
+
+    it("should handle OCR processing failure", async () => {
+      (pdfParse as jest.Mock).mockResolvedValue({ text: "" });
+
+      (sharp as unknown as jest.Mock).mockReturnValue({
+        toFormat: jest.fn().mockReturnThis(),
+        toBuffer: jest.fn().mockResolvedValue(Buffer.from("image data")),
+      });
+
+      (Tesseract.recognize as jest.Mock).mockRejectedValue(new Error("OCR failed"));
+
+      await expect(processor.extractTextWithOCR(samplePdfBuffer)).rejects.toThrow("OCR processing failed");
     });
   });
 });

@@ -134,7 +134,7 @@ export class PdfProcessor implements IProcessor {
         console.log(`Attempting to convert PDF to ${options.description} (${options.format})`);
         image = await sharp(buffer, {
           density: options.density,
-          pages: 1, // Only process first page
+          pages: 1,
         })
           .toFormat(options.format as any, options.options || {})
           .toBuffer();
@@ -158,7 +158,7 @@ export class PdfProcessor implements IProcessor {
         error.name = "UnsupportedImageFormat";
         throw error;
       } else if (lastError && lastError.message.includes("Cannot process image")) {
-        const error = new Error("Không thể xử lý PDF này");
+        const error = new Error("Cannot process this PDF");
         error.name = "ProcessingError";
         throw error;
       } else {
@@ -173,26 +173,24 @@ export class PdfProcessor implements IProcessor {
     console.log("Attempting to process PDF as image");
     let processedImage: Buffer;
     try {
-      // First try with density 300 for high quality
       processedImage = await sharp(buffer, { density: 300 }).toFormat("png").toBuffer();
       console.log("Successfully converted PDF to PNG");
     } catch (firstError) {
       console.log("First conversion attempt failed, trying with default settings");
       try {
-        // Fallback to default settings if high density fails
         processedImage = await sharp(buffer).toFormat("png").toBuffer();
       } catch (error) {
-        console.error("PDF to image conversion failed:", error);
+        console.log("PDF to image conversion failed:", error);
         let errorMsg = "Failed to process PDF file";
-        
+
         if (error instanceof Error) {
           if (error.message.includes("unsupported image format")) {
-            errorMsg = "Unsupported PDF/image format. Please convert to a standard PDF or image format first.";
+            errorMsg = "Unsupported PDF/image format. Please convert to a standard format first.";
           } else if (error.message.includes("Cannot process image")) {
             errorMsg = "Corrupted or invalid PDF file. Please verify the file integrity.";
           }
         }
-  
+
         throw new Error(errorMsg);
       }
     }
@@ -205,7 +203,7 @@ export class PdfProcessor implements IProcessor {
       console.log("OCR Confidence:", data.confidence);
 
       if (data.confidence < 60) {
-        console.warn("Low OCR confidence - extracted text may be inaccurate");
+        console.log("Low OCR confidence - extracted text may be inaccurate");
       }
 
       return {
@@ -214,7 +212,7 @@ export class PdfProcessor implements IProcessor {
         confidence: data.confidence,
       };
     } catch (error) {
-      console.error("OCR Error:", error);
+      console.log("OCR processing failed:", error);
       throw new Error(
         `OCR processing failed: ${error instanceof Error ? error.message : String(error)}`
       );
