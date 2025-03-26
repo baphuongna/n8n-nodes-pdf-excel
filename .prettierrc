@@ -1,0 +1,14 @@
+{
+  "endOfLine": "lf",
+  "singleQuote": false,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "overrides": [
+    {
+      "files": ["*.test.ts"],
+      "options": {
+        "printWidth": 120
+      }
+    }
+  ]
+}

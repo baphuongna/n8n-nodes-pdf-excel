@@ -1,0 +1,47 @@
+# Lessons Learned
+
+## Project Setup
+- Sử dụng TypeScript cho n8n node development
+- Cần tuân thủ n8n node structure và conventions
+- PDF và Excel processing nên được tách thành các module riêng biệt
+- Memory management là yếu tố quan trọng khi xử lý file lớn
+
+# Scratchpad
+
+## Current Task: N8N PDF & Excel Node Development
+
+### Overview
+Phát triển n8n custom node để:
+- Đọc và xử lý file PDF từ path hoặc binary data
+- Xử lý file Excel và trích xuất dữ liệu
+- Trả về kết quả theo cấu trúc
+
+### Progress Tracking
+[X] Initialize memory bank
+- Created all core documentation files
+- Defined project structure and requirements
+- Selected technical stack and dependencies
+
+### Next Steps
+[ ] Project Setup
+- Initialize n8n node project
+- Configure TypeScript and dependencies
+- Setup development environment
+- Configure testing framework
+
+[ ] Core Development
+- Implement PDF processing
+- Implement Excel processing
+- Create common utilities
+- Write tests
+
+[ ] Documentation & Testing
+- Technical documentation
+- Usage examples
+- CI/CD setup
+- Testing implementation
+
+### Notes
+- Cần nghiên cứu kỹ n8n node development guidelines
+- Focus vào performance và memory management
+- Ensure code quality và test coverage
