@@ -13,7 +13,7 @@ export interface IProcessor {
   process(
     buffer: Buffer,
     operation: string,
-    options?: Record<string, any>
+    options?: Record<string, any>,
   ): Promise<{
     extractedText?: string;
     metadata?: Record<string, any>;

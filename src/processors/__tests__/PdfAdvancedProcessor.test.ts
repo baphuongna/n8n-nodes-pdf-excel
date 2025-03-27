@@ -48,7 +48,9 @@ describe("PdfAdvancedProcessor", () => {
   describe("Error Handling", () => {
     it("should throw error for unsupported operation", async () => {
       const buffer = Buffer.from("test");
-      await expect(processor.process(buffer, "invalid-op")).rejects.toThrow("Unsupported operation");
+      await expect(processor.process(buffer, "invalid-op")).rejects.toThrow(
+        "Unsupported operation",
+      );
     });
   });
 });

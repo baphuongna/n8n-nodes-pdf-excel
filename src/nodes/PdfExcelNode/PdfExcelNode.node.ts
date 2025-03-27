@@ -195,7 +195,7 @@ export class PdfExcelNode implements INodeType {
           throw new NodeOperationError(
             this.getNode(),
             `Binary property '${binaryPropertyName}' not found`,
-            { itemIndex: i }
+            { itemIndex: i },
           );
         }
 
@@ -206,7 +206,7 @@ export class PdfExcelNode implements INodeType {
           throw new NodeOperationError(
             this.getNode(),
             `Binary data in property '${binaryPropertyName}' is invalid or missing data content`,
-            { itemIndex: i }
+            { itemIndex: i },
           );
         }
 
@@ -220,7 +220,7 @@ export class PdfExcelNode implements INodeType {
             `Failed to create buffer from binary data: ${
               bufferError instanceof Error ? bufferError.message : String(bufferError)
             }`,
-            { itemIndex: i }
+            { itemIndex: i },
           );
         }
 

@@ -17,7 +17,7 @@ export class ExcelProcessor implements IProcessor {
   public async process(
     buffer: Buffer,
     operation: string,
-    options?: Record<string, any>
+    options?: Record<string, any>,
   ): Promise<any> {
     switch (operation) {
       case "readWorksheet":
@@ -62,7 +62,7 @@ export class ExcelProcessor implements IProcessor {
       return { data: rows };
     } catch (error) {
       throw new Error(
-        `Error reading Excel worksheet: ${error instanceof Error ? error.message : String(error)}`
+        `Error reading Excel worksheet: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -78,7 +78,7 @@ export class ExcelProcessor implements IProcessor {
       return { worksheets: workbook.SheetNames };
     } catch (error) {
       throw new Error(
-        `Error getting Excel worksheets: ${error instanceof Error ? error.message : String(error)}`
+        `Error getting Excel worksheets: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }

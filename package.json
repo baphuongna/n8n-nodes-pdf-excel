@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-pdf-excel",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "N8N nodes for processing PDF and Excel files",
   "keywords": [
     "n8n-community-node-package",

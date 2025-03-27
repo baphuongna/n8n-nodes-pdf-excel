@@ -26,7 +26,7 @@ export class PdfAdvancedProcessor implements IProcessor {
   async process(
     buffer: Buffer,
     operation: string,
-    options?: Record<string, any>
+    options?: Record<string, any>,
   ): Promise<ProcessingResult> {
     try {
       switch (operation) {
@@ -72,7 +72,7 @@ export class PdfAdvancedProcessor implements IProcessor {
     } catch (error) {
       console.log("OCR processing failed:", error);
       throw new Error(
-        `OCR processing failed: ${error instanceof Error ? error.message : String(error)}`
+        `OCR processing failed: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
@@ -119,7 +119,7 @@ export class PdfAdvancedProcessor implements IProcessor {
     } catch (error) {
       console.log("Form processing failed:", error);
       throw new Error(
-        `Error processing PDF form: ${error instanceof Error ? error.message : String(error)}`
+        `Error processing PDF form: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
